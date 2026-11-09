@@ -1,0 +1,125 @@
+1. TABLE CREATION :
+
+CREATE TABLE Department (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR2(50) NOT NULL,
+    location VARCHAR2(30)
+);
+
+CREATE TABLE Student (
+    student_id INT PRIMARY KEY,
+    name VARCHAR2(50) NOT NULL,
+    dob DATE,
+    phone VARCHAR2(15),
+    dept_id INT,
+    cgpa NUMBER(4,2),
+    FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+);
+
+CREATE TABLE Faculty (
+    faculty_id INT PRIMARY KEY,
+    name VARCHAR2(50),
+    designation VARCHAR2(30),
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+);
+
+CREATE TABLE Course (
+    course_id VARCHAR2(10) PRIMARY KEY,
+    title VARCHAR2(80) NOT NULL,
+    credits INT,
+    dept_id INT,
+    FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
+);
+
+CREATE TABLE Enrollment (
+    student_id INT,
+    course_id VARCHAR2(10),
+    semester VARCHAR2(10),
+    grade CHAR(2),
+    PRIMARY KEY (student_id, course_id, semester),
+    FOREIGN KEY (student_id) REFERENCES Student(student_id),
+    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+);
+
+CREATE TABLE Teaches (
+    faculty_id INT,
+    course_id VARCHAR2(10),
+    semester VARCHAR2(10),
+    PRIMARY KEY (faculty_id, course_id, semester),
+    FOREIGN KEY (faculty_id) REFERENCES Faculty(faculty_id),
+    FOREIGN KEY (course_id) REFERENCES Course(course_id)
+);
+
+
+-- ── 2. DATA INSERTION ──────────────────────────────────
+
+
+   INSERT INTO Department VALUES (3, 'IT', 'Block C');
+INSERT INTO Department VALUES (4, 'MECH', 'Block D');
+
+INSERT INTO Student VALUES (102, 'Arjun', TO_DATE('2004-08-15', 'YYYY-MM-DD'), '9876501234', 3, 8.50);
+INSERT INTO Faculty VALUES (202, 'Dr Kumar', 'Associate Prof', 3);
+INSERT INTO Course VALUES ('IT302', 'Java Programming', 3, 3);
+INSERT INTO Enrollment VALUES (102, 'IT302', 'S6', 'B');
+INSERT INTO Teaches VALUES (202, 'IT302', 'S6');
+
+COMMIT;
+
+-- ── 3. DATA VERIFICATION & QUERIES ─────────────────────
+
+-- SQL*Plus Formatting commands for clean output terminal layout
+SET PAGESIZE 50;
+SET LINESIZE 120;
+COLUMN dept_name FORMAT A15;
+COLUMN location FORMAT A15;
+COLUMN name FORMAT A15;
+COLUMN designation FORMAT A15;
+COLUMN title FORMAT A20;
+
+SELECT * FROM Department;
+SELECT * FROM Student;
+SELECT * FROM Faculty;
+SELECT * FROM Course;
+SELECT * FROM Enrollment;
+SELECT * FROM Teaches;
+
+OUTPUT:
+
+Department Table
+
+   DEPT_ID DEPT_NAME       LOCATION
+---------- --------------- ---------------
+         3 IT              Block C
+         4 MECH            Block D
+
+Student Table
+
+STUDENT_ID NAME            DOB       PHONE             DEPT_ID       CGPA
+---------- --------------- --------- --------------- ---------- ----------
+       102 Arjun           15-AUG-04 9876501234               3        8.5
+
+
+Faculty Table
+
+FACULTY_ID NAME            DESIGNATION        DEPT_ID
+---------- --------------- --------------- ----------
+       202 Dr Kumar        Associate Prof            3
+
+Course Table
+
+COURSE_ID  TITLE                   CREDITS    DEPT_ID
+---------- -------------------- ---------- ----------
+IT302      Java Programming              3          3
+
+Enrollment Table
+
+STUDENT_ID COURSE_ID  SEMESTER   GR
+---------- ---------- ---------- --
+       102 IT302      S6         B
+
+Teaches Table
+
+FACULTY_ID COURSE_ID  SEMESTER
+---------- ---------- ----------
+       202 IT302      S6
